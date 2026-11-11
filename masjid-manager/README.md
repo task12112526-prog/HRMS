@@ -45,6 +45,18 @@ Operational records are scoped to a registered mosque, including staff, tenants,
 
 `supabase/seed.sql` contains fictional development records. Run it only after migrations and after registering exactly one mosque, or set `app.masjid_id` at the start of the seed script to choose the target.
 
+## GitHub Pages deployment
+
+The repository's GitHub Actions workflow builds this app from `masjid-manager/` and deploys it to GitHub Pages whenever a commit is pushed to `main`. Before the first deployment:
+
+1. In the GitHub repository, open **Settings → Pages** and set the build and deployment source to **GitHub Actions**.
+2. Under **Settings → Secrets and variables → Actions**, add the repository secrets `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. Use the Masjid Manager project's URL and its publishable/anon key only; never use a service-role or secret key in this browser app.
+3. Optionally add the repository variable `VITE_CURRENCY` (defaults to `PKR`).
+4. In the Masjid Manager Supabase project, set **Authentication → URL Configuration → Site URL** to `https://task12112526-prog.github.io/HRMS/` and allow that URL for redirects so email invitations return to the deployed app.
+5. Push a commit to `main`, or start **Deploy Masjid Manager to GitHub Pages** from the repository's **Actions** tab.
+
+The workflow sets the repository subpath for GitHub Pages and publishes a `404.html` fallback so client-side routes continue to load. Local and Vercel builds keep the default `/` base path. The deployed URL appears in the workflow's deployment environment.
+
 Accounts can be created/invited in Supabase Authentication. Member invitations are associated with the selected mosque; the created worshipper profile receives the same mosque link. Tenant accounts still require linking their Auth user ID to the matching `tenants.user_id` record. Non-manager users can only access the mosque associated with their linked member, staff, tenant, or worshipper record. Do not expose another tenant's identity or records.
 
 ### Inviting Imam, committee and worshipper accounts
